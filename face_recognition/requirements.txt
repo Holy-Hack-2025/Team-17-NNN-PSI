@@ -1,0 +1,11 @@
+opencv-python
+numpy
+Pillow
+scikit-learn
+deepface
+tensorflow
+flask
+flask-cors
+werkzeug
+requests
+matplotlib
