@@ -18,7 +18,7 @@ import java.util.Map;
 public class FeedReaderDbHelper {
 
     private static final String TAG = "FeedReaderDbHelper";
-    private static final String BASE_URL = "https://0e55-212-123-8-171.ngrok-free.app/api.php";
+    private static final String BASE_URL = "https://63d0-134-58-253-20.ngrok-free.app/api.php";
     private RequestQueue requestQueue;
 
     public interface VolleyCallback {
