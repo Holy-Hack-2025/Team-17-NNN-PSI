@@ -38,4 +38,5 @@ def text_to_speech(text):
     pygame.mixer.quit()
     pygame.display.quit() #properly quit the display module.
     os.remove("temp.mp3")
-    sys.exit()
+    # sys.exit()
+    return

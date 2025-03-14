@@ -1,6 +1,6 @@
 import requests
 import json
-from text_to_speechJP import text_to_speech
+from Juanpa_Holy_hack.text_to_speechJP import text_to_speech
 
 def generate_content_with_gemini(prompt):
     """
@@ -34,6 +34,6 @@ def generate_content_with_gemini(prompt):
         return None
 
 
-prompt = "how much is 8 + 9? Answer in less than 15 words"
+# prompt = "how much is 8 + 9? Answer in less than 15 words"
 
-text_to_speech(generate_content_with_gemini(prompt))
+# text_to_speech(generate_content_with_gemini(prompt))

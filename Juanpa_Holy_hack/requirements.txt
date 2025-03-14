@@ -1,5 +1,5 @@
 annotated-types==0.7.0
-audioop-lts==0.2.1
+# audioop-lts==0.2.1
 audiosegment==0.23.0
 cachetools==5.5.2
 certifi==2025.1.31
