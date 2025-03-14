@@ -1,7 +1,5 @@
 package holyhack.eldermind;
 
-package be.kuleuven.gt.ballotapp;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +21,7 @@ import androidx.core.view.GravityCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import be.kuleuven.gt.ballotapp.databinding.ActivityHomepageBinding;
+import holyhack.eldermind.databinding.ActivityHomepageBinding;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
 public class HomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
