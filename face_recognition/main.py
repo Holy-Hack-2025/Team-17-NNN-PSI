@@ -1,11 +1,15 @@
 import cv2
 import numpy as np
+import sys
 import os
 import keyboard
 from deepface import DeepFace
 from sklearn.metrics.pairwise import cosine_similarity
-from Juanpa_Holy_hack import llm_response 
-from Juanpa_Holy_hack import text_to_speechJP
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from Juanpa_Holy_hack.llm_response import generate_content_with_gemini 
+from Juanpa_Holy_hack.text_to_speechJP import text_to_speech
 
 def detect_faces(image, face_net):
     h, w = image.shape[:2]
@@ -61,23 +65,22 @@ def load_known_faces(directory="known_faces"):
     
     return known_faces
 
-def main():
+def recognize_faces_continuous():
     known_faces = load_known_faces()
-    
-    # Start webcam for live detection
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Use DirectShow backend to improve compatibility
+    prev_name="Unknown"
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     if not cap.isOpened():
         print("Error: Could not open webcam. Trying alternative methods...")
-        cap = cv2.VideoCapture(0)  # Try default backend
+        cap = cv2.VideoCapture(0)
     
     if not cap.isOpened():
         print("Final Error: Webcam not accessible. Exiting program.")
         return
     
     face_net = cv2.dnn.readNetFromCaffe("deploy.prototxt", "res10_300x300_ssd_iter_140000.caffemodel")
-    
     print("Press 'q' to exit the program.")
     
+    detected_names = []
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -85,25 +88,37 @@ def main():
             cap = cv2.VideoCapture(0)
             continue
         
-        frame = cv2.flip(frame, 1)  # Flip the frame horizontally for a better experience
+        frame = cv2.flip(frame, 1)
         faces = detect_faces(frame, face_net)
         
         for (x, y, x2, y2) in faces:
             face_image = frame[y:y2, x:x2]
             test_embedding = get_face_embedding(face_image)
             name = recognize_face(test_embedding, known_faces)
+            detected_names.append(name)
+            if prev_name!=name and name!="Unknown":
+                prompt="Simply Introduce"+name+"he is your friend, in one line"
+                text_to_speech(generate_content_with_gemini(prompt))
+                print(name)
+            prev_name=name
             cv2.rectangle(frame, (x, y), (x2, y2), (0, 255, 0), 2)
             cv2.putText(frame, name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-            return name
         
         cv2.imshow("Live Face Recognition", frame)
-        cv2.waitKey(1)  
+        cv2.waitKey(30)  
         if keyboard.is_pressed("q"):
-            print("Exit command received. Closing application...")
+            print("Exit command received. Detected names: ", detected_names)
             break
     
     cap.release()
     cv2.destroyAllWindows()
+    return detected_names
+
+def main():
+    detected_people = recognize_faces_continuous()
+    print("Final detected names:", detected_people)
+    return detected_people
 
 if __name__ == "__main__":
-    main()
+    detected_names = main()
+    print("Final detected people:", detected_names)
