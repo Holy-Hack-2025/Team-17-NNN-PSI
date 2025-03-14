@@ -64,6 +64,7 @@
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_add_device"
             android:id="@+id/add_menu"
+            android:contentDescription="Add"
             app:layout_anchor="@id/bottomAppBar"
             app:layout_anchorGravity="center"
             app:maxImageSize="40dp"

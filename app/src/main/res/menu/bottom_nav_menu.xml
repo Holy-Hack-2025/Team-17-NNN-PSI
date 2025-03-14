@@ -14,15 +14,15 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/add_men"
+        android:title=""
+        android:enabled="false" />
+
+    <item
         android:id="@+id/warnings_menu"
         android:icon="@drawable/ic_warning"
         android:title="Warnings"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/add_men"
-        android:title=""
-        android:enabled="false" />
 
     <item
         android:id="@+id/health_menu"
