@@ -67,7 +67,7 @@ public class FeedReaderDbHelper {
 
     // ✅ CHECK USER LOGIN
     public void checkUser(String email, String password, final VolleyCallback callback) {
-        String query = "SELECT passwordCreate FROM users WHERE email='" + email + "'";
+        String query = "SELECT password FROM users WHERE email='" + email + "'";
         sendGetRequest(query, new JsonCallback() {
             @Override
             public void onSuccess(JSONArray response) {
