@@ -9,28 +9,33 @@ def suppress_pygame_message():
 
 suppress_pygame_message()  # Call the function to suppress
 
-import pygame
-from pyt2s.services import stream_elements
+import pygame # type: ignore
+from pyt2s.services import stream_elements # type: ignore
 
 def text_to_speech(text):
     data = stream_elements.requestTTS(text, stream_elements.Voice.Russell.value)
-
-    # Initialize pygame mixer
     pygame.mixer.init()
-
-    # Save the audio to a temporary file
+    pygame.display.init() #Initialize the display module
+    pygame.display.set_mode((1, 1)) #Creates a hidden window.
     with open("temp.mp3", "wb") as f:
         f.write(data)
-
     pygame.mixer.music.load("temp.mp3")
     pygame.mixer.music.play()
-
     print("Playing audio... Press 'q' to stop.")
 
-    # Keep the program running to listen for the stop command
     while pygame.mixer.music.get_busy():
-        if input() == "q":
-            pygame.mixer.music.stop()
-            print("Audio stopped.")
-            break
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    pygame.mixer.music.stop()
+                    sys.exit()
+        pygame.time.delay(10)
 
+    print("Audio finished.")
+    pygame.mixer.quit()
+    pygame.display.quit() #properly quit the display module.
+    os.remove("temp.mp3")
+    sys.exit()
