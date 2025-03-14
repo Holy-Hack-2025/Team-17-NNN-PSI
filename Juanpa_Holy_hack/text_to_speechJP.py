@@ -1,66 +1,36 @@
-import requests
-import json
-import pyttsx3
+import os
+import sys
+import subprocess
+
+# Suppress pygame startup message
+def suppress_pygame_message():
+    # Redirect stdout to null
+    sys.stdout = open(os.devnull, 'w')
+
+suppress_pygame_message()  # Call the function to suppress
+
+import pygame
 from pyt2s.services import stream_elements
 
-def generate_content_with_gemini(api_key, prompt):
-    """
-    Sends a request to the Gemini API to generate content and reads it aloud in English.
+def text_to_speech(text):
+    data = stream_elements.requestTTS(text, stream_elements.Voice.Russell.value)
 
-    Args:
-        api_key: Your Gemini API key.
-        prompt: The text prompt to send to the model.
-    """
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
-    headers = {'Content-Type': 'application/json'}
-    data = {
-        "contents": [{
-            "parts": [{"text": prompt}]
-        }]
-    }
+    # Initialize pygame mixer
+    pygame.mixer.init()
 
-    try:
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-        result = response.json()
-        generated_text = result['candidates'][0]['content']['parts'][0]['text']
+    # Save the audio to a temporary file
+    with open("temp.mp3", "wb") as f:
+        f.write(data)
 
-        # # Text-to-speech with English voice
-        # engine = pyttsx3.init()
-        # voices = engine.getProperty('voices')
+    pygame.mixer.music.load("temp.mp3")
+    pygame.mixer.music.play()
 
-        # # Find an English voice (you might need to adjust this based on your system)
-        # english_voice = None
-        # for voice in voices:
-        #     if 'english' in voice.name.lower(): #checking if the word english is in the voice name.
-        #         english_voice = voice
-        #         break
+    print("Playing audio... Press 'q' to stop.")
 
-        # if english_voice:
-        #     engine.setProperty('voice', english_voice.id)
-        # else:
-        #     print("No English voice found. Using default voice.")
+    # Keep the program running to listen for the stop command
+    while pygame.mixer.music.get_busy():
+        if input() == "q":
+            pygame.mixer.music.stop()
+            print("Audio stopped.")
+            break
 
-        # engine.say(generated_text)
-        # engine.runAndWait()
-        
-        stream_elements.requestTTS(generated_text, stream_elements.Voice.Russell.value)
-
-
-        return generated_text
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error during request: {e}")
-        return None
-    except (KeyError, IndexError, TypeError) as e:
-        print(f"Error parsing response: {e}. Raw response: {response.text}")
-        return None
-
-# Example usage:
-api_key = "AIzaSyBLRSIpuUA7sTGnlZaUyPe6fq-jFhTQkoE"  # Replace with your actual API key
-prompt = "WHy is Mexico better than Greece?"
-
-generated_text = generate_content_with_gemini(api_key, prompt)
-
-if generated_text:
-    print(generated_text)
